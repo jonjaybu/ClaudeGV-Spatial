@@ -659,13 +659,13 @@ header h1 { font-size: 1rem; font-weight: 700; letter-spacing: .01em; flex: 1; }
   padding: .2em .55em; border-radius: 4px; text-transform: uppercase; letter-spacing: .05em;
 }
 #done-btn {
-  padding: .4rem .9rem; background: transparent;
-  border: 1.5px solid rgba(255,255,255,.55); border-radius: 6px;
-  color: #fff; font-size: .875rem; font-weight: 600;
+  padding: .45rem 1.1rem; background: #f59e0b; border: none;
+  border-radius: 6px; color: #1c1917; font-size: .9375rem; font-weight: 700;
   cursor: pointer; white-space: nowrap; flex-shrink: 0;
-  transition: background .15s, border-color .15s;
+  box-shadow: 0 0 0 2px rgba(245,158,11,.45);
+  transition: background .15s, box-shadow .15s;
 }
-#done-btn:hover { background: rgba(255,255,255,.12); border-color: #fff; }
+#done-btn:hover { background: #fbbf24; box-shadow: 0 0 0 3px rgba(245,158,11,.6); }
 
 /* ── Feedback modal ── */
 #fb-overlay {
@@ -915,7 +915,7 @@ header h1 { font-size: 1rem; font-weight: 700; letter-spacing: .01em; flex: 1; }
   </div>
   <div class="info-card">
     <span class="card-label">About this tool</span>
-    This tool is an interface for exploring <a href="https://www.gunviolencearchive.org/" target="_blank" rel="noopener" style="color:#1e3a5f;">Gun Violence Archive (GVA)</a> data from Toledo, Ohio, 2016–present. The GVA data have been geocoded to support spatial analyses, including breakdowns by neighborhood, school assignment area, and proximity to parks and high schools. It knows the number of victims (fatal and nonfatal) per incident, but does not have information about demographics or circumstances. Type your question below to get started. When you're finished, please click "I'm done" to provide some feedback.
+    This tool is an interface for exploring <a href="https://www.gunviolencearchive.org/" target="_blank" rel="noopener" style="color:#1e3a5f;">Gun Violence Archive (GVA)</a> data from Toledo, Ohio, 2016–present. The GVA data have been geocoded to support spatial analyses, including breakdowns by neighborhood, school assignment area, and proximity to parks and high schools. It knows the number of victims (fatal and nonfatal) per incident, but does not have information about demographics or circumstances. Type your question below to get started. <strong>When you're finished, please click the <span style="background:#fef3c7;color:#92400e;padding:.1em .3em;border-radius:3px;font-weight:700;">"I'm done"</span> button in the top right to provide feedback.</strong>
   </div>
   <div class="examples-card">
     <span class="card-label">Example questions</span>
