@@ -1162,8 +1162,8 @@ header h1 { font-size: 1rem; font-weight: 700; letter-spacing: .01em; flex: 1; }
     const wrap = document.getElementById("chat-wrap");
 
     if (role === "assistant" && isMarkdown) {
-      // Split on <chart> and <map> tags
-      const tagRegex = /<(chart|map)>([\s\S]*?)<\/\1>/g;
+      // Split on <chart> and <geomap> tags
+      const tagRegex = /<(chart|geomap)>([\s\S]*?)<\/\1>/g;
       const parts = [];
       let last = 0, match;
       while ((match = tagRegex.exec(content)) !== null) {
@@ -1199,7 +1199,7 @@ header h1 { font-size: 1rem; font-weight: 700; letter-spacing: .01em; flex: 1; }
             wrap.appendChild(chartWrap);
             if (!firstEl) firstEl = chartWrap;
           } catch (e) { console.error("Chart JSON parse error:", e); }
-        } else if (part.kind === "map") {
+        } else if (part.kind === "geomap") {
           try {
             const spec = JSON.parse(part.content);
             const placeholder = document.createElement("div");
