@@ -1,0 +1,6 @@
+flask
+anthropic
+google-auth
+google-api-python-client
+shapely
+pyshp

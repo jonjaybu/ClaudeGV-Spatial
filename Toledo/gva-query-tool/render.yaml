@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: toledo-gva-query-tool
+    runtime: python
+    # Set root directory to Toledo/ in the Render dashboard, or adjust paths below
+    buildCommand: pip install -r gva-query-tool/requirements.txt
+    startCommand: cd gva-query-tool && python app.py
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: GOOGLE_SERVICE_ACCOUNT_JSON
+        sync: false
+      - key: GOOGLE_SPREADSHEET_ID
+        value: 1g5EBEUyAL9H3Zfo3ShX6-HVr2eQ83HYnU9BZllXb39c
+      - key: GOOGLE_SHEET_NAME
+        value: Chat Logs
+      - key: GOOGLE_FEEDBACK_SHEET_NAME
+        value: Feedback
+      - key: DATA_DIR
+        value: ..
+      - key: PORT
+        value: 5000
