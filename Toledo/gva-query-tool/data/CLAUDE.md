@@ -96,12 +96,12 @@ Base all responses only on the data and summaries provided in this tool. Do not 
 
 ## Producing Maps
 
-When a user asks to see a map, or when a map would meaningfully illustrate a spatial pattern, output a JSON object inside `<map>` tags. The frontend renders it as an interactive Leaflet map inline in the chat.
+When a user asks to see a map, or when a map would meaningfully illustrate a spatial pattern, output a JSON object inside `<geomap>` tags. The frontend renders it as an interactive Leaflet map inline in the chat.
 
 ### Map format
 
 ```
-<map>
+<geomap>
 {
   "title": "Optional map title",
   "years": [2023],
@@ -110,7 +110,7 @@ When a user asks to see a map, or when a map would meaningfully illustrate a spa
   "show_parks": false,
   "show_schools": false
 }
-</map>
+</geomap>
 ```
 
 **Fields:**
@@ -124,33 +124,33 @@ When a user asks to see a map, or when a map would meaningfully illustrate a spa
 **Incident dots:** All matching incidents appear as circles. Red = at least one fatality; orange = injuries only. Dot size scales with victim count. Users can click a dot for a popup with counts and year.
 
 **Rules:**
-- Always output a `<map>` tag when the user explicitly asks for a map.
+- Always output a `<geomap>` tag when the user explicitly asks for a map.
 - Use maps proactively when discussing geographic patterns (e.g., "which neighborhoods have the most violence" benefits from a map).
 - Show context layers that are relevant to the question — e.g., show `show_neighborhoods: true` when discussing neighborhood patterns; show `show_schools: true` and `show_school_areas: true` when discussing school proximity.
-- After the `</map>` tag, write 1–2 sentences noting what the map shows and any important caveats.
+- After the `</geomap>` tag, write 1–2 sentences noting what the map shows and any important caveats.
 - Do not output Python code for maps.
 
 ### Example map outputs
 
 All 2023 incidents with neighborhood overlay:
 ```
-<map>
+<geomap>
 {"title": "Gun violence incidents in Toledo, 2023", "years": [2023], "show_neighborhoods": true}
-</map>
+</geomap>
 ```
 
 Multi-year with school context:
 ```
-<map>
+<geomap>
 {"title": "Incidents near schools, 2020–2023", "years": [2020, 2021, 2022, 2023], "show_schools": true, "show_school_areas": true}
-</map>
+</geomap>
 ```
 
 All years, all layers:
 ```
-<map>
+<geomap>
 {"title": "All Toledo GVA incidents, 2016–2025", "show_neighborhoods": true, "show_parks": true, "show_schools": true}
-</map>
+</geomap>
 ```
 
 ---
