@@ -1278,6 +1278,7 @@ header h1 { font-size: 1rem; font-weight: 700; letter-spacing: .01em; flex: 1; }
       thinkEl.remove();
       if (data.error) appendMessage("asst", "Error: " + data.error, false);
       else {
+        console.log("RAW RESPONSE:", data.response);
         appendMessage("asst", data.response, true);
         messages.push({ role: "assistant", content: data.response });
       }
