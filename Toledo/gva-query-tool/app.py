@@ -783,11 +783,6 @@ header h1 { font-size: 1rem; font-weight: 700; letter-spacing: .01em; flex: 1; }
   margin-top: .25rem; max-width: min(78%, 680px); align-self: flex-start;
 }
 .chart-wrap canvas { display: block; max-height: 320px; }
-/* chart inside a bubble */
-.bubble .chart-wrap {
-  margin: .75rem -1rem; max-width: calc(100% + 2rem);
-  border-left: none; border-right: none; border-radius: 0;
-}
 
 /* ── Map wrapper ── */
 .map-wrap {
@@ -795,11 +790,6 @@ header h1 { font-size: 1rem; font-weight: 700; letter-spacing: .01em; flex: 1; }
   border-radius: 10px; overflow: hidden;
   margin-top: .25rem; max-width: min(92%, 720px); align-self: flex-start;
   width: 100%;
-}
-/* map inside a bubble */
-.bubble .map-wrap {
-  margin: .75rem -1rem; width: calc(100% + 2rem);
-  border-left: none; border-right: none; border-radius: 0;
 }
 .map-title {
   font-size: .8125rem; font-weight: 600; color: #374151;
@@ -1170,48 +1160,72 @@ header h1 { font-size: 1rem; font-weight: 700; letter-spacing: .01em; flex: 1; }
   // ── appendMessage ──────────────────────────────────────────────────────────
   function appendMessage(role, content, isMarkdown) {
     const wrap = document.getElementById("chat-wrap");
+
+    if (role !== "user" && isMarkdown) {
+      // Split on ```chart and ```geomap code fences
+      const tagRegex = /```(chart|geomap)\n([\s\S]*?)```/g;
+      const parts = [];
+      let last = 0, match;
+      while ((match = tagRegex.exec(content)) !== null) {
+        if (match.index > last) parts.push({ kind: "text", content: content.slice(last, match.index) });
+        parts.push({ kind: match[1], content: match[2].trim() });
+        last = match.index + match[0].length;
+      }
+      if (last < content.length) parts.push({ kind: "text", content: content.slice(last) });
+
+      let firstEl = null;
+      const labelDiv = document.createElement("div");
+      labelDiv.className = "msg-label";
+      labelDiv.style.cssText = "align-self:flex-start";
+      labelDiv.textContent = "Assistant";
+      wrap.appendChild(labelDiv);
+
+      for (const part of parts) {
+        if (part.kind === "text" && part.content.trim()) {
+          const div = document.createElement("div");
+          div.className = "msg asst";
+          const bubble = document.createElement("div");
+          bubble.className = "bubble";
+          bubble.innerHTML = marked.parse(part.content.trim());
+          div.appendChild(bubble);
+          wrap.appendChild(div);
+          if (!firstEl) firstEl = div;
+        } else if (part.kind === "chart") {
+          try {
+            const spec = JSON.parse(part.content);
+            const chartWrap = document.createElement("div");
+            chartWrap.className = "chart-wrap";
+            renderChart(chartWrap, spec);
+            wrap.appendChild(chartWrap);
+            if (!firstEl) firstEl = chartWrap;
+          } catch (e) { console.error("Chart JSON parse error:", e); }
+        } else if (part.kind === "geomap") {
+          try {
+            const spec = JSON.parse(part.content);
+            const placeholder = document.createElement("div");
+            wrap.appendChild(placeholder);
+            renderMap(placeholder, spec).catch(e => console.error("Map render error:", e));
+            if (!firstEl) firstEl = placeholder;
+          } catch (e) { console.error("Map JSON parse error:", e); }
+        }
+      }
+      wrap.scrollTop = wrap.scrollHeight;
+      return firstEl || labelDiv;
+    }
+
     const div = document.createElement("div");
     div.className = "msg " + (role === "user" ? "user" : "asst");
     const label = document.createElement("div");
     label.className = "msg-label";
     label.textContent = role === "user" ? (userInfo.name || "You") : "Assistant";
-    div.appendChild(label);
     const bubble = document.createElement("div");
     bubble.className = "bubble";
-
-    if (isMarkdown) {
-      bubble.innerHTML = marked.parse(content);
-    } else {
-      bubble.textContent = content;
-    }
-
+    if (isMarkdown) bubble.innerHTML = marked.parse(content);
+    else bubble.textContent = content;
+    div.appendChild(label);
     div.appendChild(bubble);
     wrap.appendChild(div);
     wrap.scrollTop = wrap.scrollHeight;
-
-    if (isMarkdown) {
-      // Replace rendered ```chart blocks with Chart.js widgets
-      bubble.querySelectorAll("code.language-chart").forEach(el => {
-        try {
-          const spec = JSON.parse(el.textContent);
-          const chartWrap = document.createElement("div");
-          chartWrap.className = "chart-wrap";
-          el.closest("pre").replaceWith(chartWrap);
-          renderChart(chartWrap, spec);
-        } catch (e) { console.error("Chart error:", e); }
-      });
-
-      // Replace rendered ```geomap blocks with Leaflet maps
-      bubble.querySelectorAll("code.language-geomap").forEach(el => {
-        try {
-          const spec = JSON.parse(el.textContent);
-          const placeholder = document.createElement("div");
-          el.closest("pre").replaceWith(placeholder);
-          renderMap(placeholder, spec).catch(e => console.error("Map error:", e));
-        } catch (e) { console.error("Map JSON error:", e); }
-      });
-    }
-
     return div;
   }
 
